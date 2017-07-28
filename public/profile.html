@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html ng-app="tradeapp">
+  
+  <head>
+    <title>Seabook App</title>
+    <link href="/public/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/public/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Fredoka One', rel='stylesheet', type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Great Vibes', rel='stylesheet', type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Marvel', rel='stylesheet', type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Galdeano', rel='stylesheet', type='text/css'>
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script type="text/javascript" src="https://code.angularjs.org/1.6.4/angular-resource.min.js"></script>
+    <script type="text/javascript" src="controllers/clickController.client.js"></script>      
+  </head>
+  
+  <body ng-controller="appController">
+    
+    <header>     
+      <a href="/">Home</a>
+      <a ng-click="openForm()"><i class="fa fa-cog fa-lg"></i></a>
+      <a href="/auth/github" ng-hide="logged"> Login with <i class="fa fa-github fa-lg"></i></a>
+      <a href="/logout" ng-show="logged"> Logout <i class="fa fa-github fa-lg"></i></a>
+      <a>Visiting as <span style="font-weight:bold;font-size:22px;color:rgb(152,245,255)">{{loginName}}!</span></a>
+      <div id="menuBooks">
+        <button id="selbutton" ng-click="allBooks()">All Books</button>
+        <button id="selbutton" ng-click="myBooks()">My Books</button>
+        <button id="selbutton" ng-click="openAdd()">Add Book</button>      
+      </div>
+    </header>
+   
+    <!-- Add new Book -->
+    <div ng-show="showAdd">
+      <div class="modal">
+        <div class="modal-content">
+          <div id="modalHead">
+            <span>Add new book</span>
+            <a ng-click="closeModal()"><span class="close"><i class="fa fa-window-close"></i></span></a>
+          </div>
+          <form>
+            <fieldset>
+              <label for="book">Book</label>
+              <input type="text" placeholder="Book title" name="book" ng-model="bookTitle"/> 
+              <button id="submitButton" ng-click="addBook()"> Add </button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div> 
+    
+    <!-- Modal for trading books (requested and other users requesting) -->
+    <div ng-show="tradeModal" id="scroll">
+      <div class="modal">
+        <div class="modal-content">
+          <a ng-click="closeModal()"><span class="close"><i class="fa fa-window-close"></i></span></a>
+          <div class="bookItem">
+            <p id="item1">Book Title</p>             
+            <p id="item2">Username</p>
+          </div>
+          <div id="idScroll">
+          <div class="bookItem" ng-repeat="book in myBooksList" ng-show="checkMine">
+            <p id="item1">{{book.title}}</p> <p id="item2">{{book.user}}</p> <span id="posbutton">
+            <button id="submitButton" ng-click="sendRequest(book, true)" ng-show="book.requester != ''">Cancel</button></span>
+            <button id="submitButton" ng-click="sendRequest(book, true)" ng-show="book.borrower != ''">Return</button></span>
+          </div>
+          <div class="bookItem" ng-repeat="book in userBooksList" ng-show="checkOthers">
+            <p id="item1">{{book.title}}</p> <p id="item2">{{book.requester}} {{book.borrower}}</p> 
+            <span id="posbutton">
+              <button id="submitButton2" ng-click="acceptReq(book,true)" ng-show="book.requester != ''">Accept</button> 
+              <button id="submitButton2" ng-click="acceptReq(book, false)" ng-show="book.requester != ''">Reject</button>
+              <button id="submitButton2" ng-disabled="book.borrower != ''" ng-show="book.borrower != '' ">BORROWED</button> 
+            </span>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal for updating user profile -->
+    <div ng-show="showModal">
+      <div class="modal">
+        <div class="modal-content">
+          <div id="modalHead">
+            <span>Update Profile</span>
+            <a ng-click="closeModal()"><span class="close"><i class="fa fa-window-close"></i></span></a>
+          </div>
+          <form>
+            <fieldset>
+              <label for="name">Name</label>
+              <input type="text" name="name" ng-model="fullName"/>
+              <label for="city">City</label>
+              <input type="text" name="city" ng-model="city"/>
+              <label for="state">State</label>
+              <input type="text" name="state" ng-model="state"/>
+              <label for="email">e-mail</label>
+              <input type= "text" name="email" ng-model="email"/>
+              <button type="submit" id="submitButton" ng-click="updateProfile()">Save Changes</button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+        
+    <div class="catalog">
+      <div class="trade">
+        <h4>There are {{numBooks}} books disponible in our catalogue.</h4>
+        <a ng-click="openOthersTrade()"><p id="trade1">Users requested {{othersTrade}} of your books </p></a> 
+        <a ng-click="openMyTrade()"><p id="trade2">You have requested {{myTrade}} books</p></a>
+      </div>
+      <ul>
+        <li ng-repeat="item in list">
+          <div id="details">            
+            <button ng-click="sendRequest(item, false)" ng-disabled="!{{item.available}}" ng-show="loginName!=item.user">
+              <i class="fa fa-share-square fa-lg"></i>
+            </button>
+            <button ng-click="deleteBook(item)" ng-show="loginName==item.user" ng-disabled="item.requester!='' || item.borrower!=''">
+              <i class="fa fa-window-close fa-lg"></i>
+            </button>
+            <a><span>{{item.user}}</span></a> 
+          </div>
+          <div>
+            <a title="{{item.title}}"><img ng-src="{{item.img}}"/></a> 
+          </div>
+        </li>
+      </ul>
+    </div>
+        
+    <div>
+    
+    </div>
+    
+    <div style="height:100px"></div> <!-- Div to create space to avoid the last results covered by the footer -->
+      
+    <footer>
+			<p id="copyright"> Copyright © 2017 Yasmin Melean </p>
+      <div id="links">
+			  <a href="https://www.freecodecamp.com/meleany" target="_blank">
+          <i class="fa fa-free-code-camp fa-2x fa-fw"></i>
+			  </a>
+			  <a href="https://github.com/meleany" target="_blank">
+				  <i class="fa fa-github-alt fa-2x"></i>
+			  </a>
+			  <a href="https://codepen.io/meleany" target="_blank">
+				  <i class="fa fa-codepen fa-2x"></i>
+			  </a>
+			  <a href="https://ymelbart.wordpress.com" target="_blank"> 
+				  <i class="fa fa-wordpress fa-2x"></i>
+			  </a>
+      </div>    
+    </footer>
+  
+  </body>
+
+</html>

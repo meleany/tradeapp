@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html ng-app="tradeapp">
+  
+  <head>
+    <title>Seabook App</title>
+    <link href="/public/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/public/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Fredoka One', rel='stylesheet', type='text/css'>    
+    <link href='https://fonts.googleapis.com/css?family=Great Vibes', rel='stylesheet', type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Marvel', rel='stylesheet', type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Galdeano', rel='stylesheet', type='text/css'>
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script type="text/javascript" src="https://code.angularjs.org/1.6.4/angular-resource.min.js"></script>
+    <script type="text/javascript" src="controllers/clickController.client.js"></script>      
+  </head>
+  
+  <body ng-controller="appController">
+    
+    <header>
+      <a href="/">Home</a>
+      <a href="/profile" ng-show="logged">Catalogue</a> 
+      <a href="/auth/github" ng-hide="logged"> Login with <i class="fa fa-github fa-lg"></i></a>
+      <a href="/logout" ng-show="logged"> Logout <i class="fa fa-github fa-lg"></i></a>
+      <a>Visiting as <span style="font-weight:bold;font-size:22px;color:rgb(152,245,255)">{{loginName}}!</span></a>
+    </header>
+    
+    <div class="container">
+      
+      <div class="title">
+        <h1><i class="fa fa-book fa-fw"></i> Seabook</h1>
+        <h4>An ocean world of books for sharing</h4>
+      </div>
+      
+      <div>
+        <div class="left">
+          <p class="subtitle"><i class="fa fa-file-text fa-2x fa-fw"></i>Online Book Catalogue</p>
+          <p>See all the current books in our catalogue ready for you to borrow. Use Seabook to catalogue your books online.</p>
+        </div>
+        <div class="left">
+          <p class="subtitle"><i class="fa fa-upload fa-2x fa-fw"></i>Add books Fast & Easy</p>
+          <p>Adding books to Seabook is easy in a matter of few clicks: no need of long descriptions, searchs or photos.</p>
+        </div>
+        <div class="left">
+          <p class="subtitle"><i class="fa fa-share-square-o fa-2x fa-fw"></i> Trade books</p>
+          <p>Just login to start trading. Request books from other users and wait for their aproval (or rejection).</p>
+        </div>
+      </div>
+      
+    </div>
+    
+    </div>
+  
+    <div style="height:100px"></div> <!-- Div to create space to avoid the last results covered by the footer -->
+    
+    <footer>
+			<p id="copyright"> Copyright © 2017 Yasmin Melean </p>
+      <div id="links">
+			  <a href="https://www.freecodecamp.com/meleany" target="_blank">
+          <i class="fa fa-free-code-camp fa-2x fa-fw"></i>
+			  </a>
+			  <a href="https://github.com/meleany" target="_blank">
+				  <i class="fa fa-github-alt fa-2x"></i>
+			  </a>
+			  <a href="https://codepen.io/meleany" target="_blank">
+				  <i class="fa fa-codepen fa-2x"></i>
+			  </a>
+			  <a href="https://ymelbart.wordpress.com" target="_blank"> 
+				  <i class="fa fa-wordpress fa-2x"></i>
+			  </a>
+      </div>    
+    </footer>
+  
+  </body>
+  
+</html>
